@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myapp"
+version = "0.1.0"
+description = "App PySide6 webcam + YOLO (mains) modulaire"
+requires-python = ">=3.10"
+dependencies = [
+  "PySide6>=6.5",
+  "opencv-python>=4.8",
+  "PyYAML>=6.0",
+  "ultralytics>=8.2"
+]
+
+[project.scripts]
+myapp = "myapp.main:main"

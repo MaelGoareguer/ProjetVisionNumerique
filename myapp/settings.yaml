@@ -1,0 +1,40 @@
+camera:
+  index: 0
+  resolution: [1280, 720]
+  fps: 30
+
+# Si tu utilises encore le plugin_loader (optionnel)
+processing:
+  modules:
+    - name: "HandYolo"
+      class: "myapp.processing.hand_yolo.HandYolo"
+      engine: "yolo"
+      enabled: true
+
+engines:
+  yolo:
+    # --- Choisis ton mode ---
+    # "detect" = boîtes englobantes (nécessite un modèle de détection de mains)
+    # "pose"   = points clés de la main (nécessite un modèle de pose mains)
+    task: "detect"
+
+    # Chemin vers ton modèle YOLO (.pt)
+    # Exemple : un détecteur de mains entraîné (à placer dans resources/)
+    weights: "resources/handdet.pt"
+
+    # Seuils / options d'inférence
+    conf: 0.30          # seuil de confiance
+    iou: 0.45           # seuil NMS
+    classes: null       # ex: [0] si ta classe "hand" est id 0 ; null = toutes
+    imgsz: 640          # taille d’entrée (peut baisser pour gagner en FPS)
+    device: null        # "0" pour GPU CUDA, null pour CPU
+    draw_scores: true   # affiche le score sur les boîtes
+    # draw_pose: true   # (utilisé seulement si task: "pose")
+
+logging:
+  level: "INFO"
+  format: "[%(levelname)s] %(asctime)s - %(name)s - %(message)s"
+  handlers:
+    console: true
+    file: "log/app.log"
+

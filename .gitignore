@@ -1,0 +1,33 @@
+# --- Dossiers Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.so
+
+# --- Environnements virtuels ---
+.venv/
+env/
+venv/
+ENV/
+
+# --- Dossier créé par pip install -e . ---
+*.egg-info/
+*.egg/
+build/
+dist/
+
+# --- Logs et caches ---
+*.log
+logs/
+.cache/
+.ipynb_checkpoints/
+.mypy_cache/
+.pytest_cache/
+
+# --- IDE / éditeurs ---
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,28 @@
+camera:
+  fps: 60
+  index: 0
+  resolution:
+  - 1280
+  - 720
+engines:
+  yolo:
+    classes: null
+    conf: 0.3
+    device: null
+    draw_scores: true
+    imgsz: 640
+    iou: 0.45
+    task: pose
+    weights: myapp/resources/handdet.pt
+logging:
+  format: '[%(levelname)s] %(asctime)s - %(name)s - %(message)s'
+  handlers:
+    console: true
+    file: log/app.log
+  level: INFO
+processing:
+  modules:
+  - class: myapp.processing.hand_yolo.HandYolo
+    enabled: true
+    engine: yolo
+    name: HandYolo
