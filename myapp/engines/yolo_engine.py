@@ -21,9 +21,25 @@ class YoloEngine:
     ):
         try:
             from ultralytics import YOLO  
+        except ImportError as e:
+            # Vérifier si c'est un problème avec ultralytics ou ses dépendances
+            error_msg = str(e).lower()
+            if "pillow" in error_msg or "pil" in error_msg:
+                raise ImportError(
+                    "Le moteur YOLO nécessite 'Pillow' (PIL). Réinstallez-le:\n"
+                    "pip uninstall Pillow pillow -y && pip install Pillow"
+                ) from e
+            else:
+                raise ImportError(
+                    "Le moteur YOLO nécessite 'ultralytics' et ses dépendances.\n"
+                    "Installez-les avec: pip install ultralytics\n"
+                    f"Erreur originale: {e}"
+                ) from e
         except Exception as e:
             raise ImportError(
-                "Le moteur YOLO nécessite 'ultralytics'. Installe-le: pip install ultralytics"
+                f"Erreur lors de l'import d'ultralytics: {e}\n"
+                "Assurez-vous que ultralytics est correctement installé:\n"
+                "pip install --upgrade ultralytics"
             ) from e
 
         self.YOLO = YOLO
