@@ -26,6 +26,14 @@ logs/
 .mypy_cache/
 .pytest_cache/
 
+# --- Vidéos (peuvent être volumineuses) ---
+videos/*.mp4
+videos/*.avi
+videos/*.mov
+videos/*.mkv
+videos/*.wmv
+videos/*.flv
+
 # --- IDE / éditeurs ---
 .vscode/
 .idea/
