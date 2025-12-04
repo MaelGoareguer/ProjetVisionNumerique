@@ -10,7 +10,7 @@ while True :
     ret, frame = cap.read()
     if not ret : break
 
-    results = model(frame, conf=0.25, verbose=False)
+    results = model(frame, conf=0.5, verbose=False)
 
     for result in results :
         for box in result.boxes :
