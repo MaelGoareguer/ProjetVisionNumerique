@@ -2,7 +2,7 @@
 
 ## Installation (dev)
 ```bash
-python -3.10.6 -m venv .venv && source .venv/bin/activate   # (Windows: .venv\Scripts\activate.bat)
+python -3.10.6 -m venv .venv && source .venv/bin/activate   # (PowerShell: py -3.10.6 -m venv .venv et .venv\Scripts\activate.bat)
 pip install -e .                                     # depuis la racine `mon_projet`
 ```
 
