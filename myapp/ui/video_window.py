@@ -38,13 +38,22 @@ class VideoWindow(QMainWindow):
         self.status_label.setStyleSheet("color: orange; font-size: 12px; font-weight: bold;")
         self.status_label.setAlignment(Qt.AlignCenter)
         
+        # Label pour afficher l'état audio (volume)
+        self.audio_label = QLabel("Audio: 🔊 100%")
+        self.audio_label.setStyleSheet("color: blue; font-size: 11px;")
+        self.audio_label.setAlignment(Qt.AlignCenter)
+        
         layout = QVBoxLayout()
         layout.addWidget(self.video_label)
         layout.addWidget(self.status_label)
         layout.addWidget(self.video_info_label)
+        layout.addWidget(self.audio_label)
         central = QWidget()
         central.setLayout(layout)
         self.setCentralWidget(central)
+        
+        # État du plein écran
+        self.is_fullscreen = False
         
         # Timer pour mettre à jour la vidéo
         self.timer = QTimer(self)
@@ -86,6 +95,12 @@ class VideoWindow(QMainWindow):
                 self.status_label.setText("État: PAUSE")
                 self.status_label.setStyleSheet("color: orange; font-size: 12px; font-weight: bold;")
             
+            # Mettre à jour l'état audio
+            volume = self.video_player.get_volume()
+            volume_percent = int(volume * 100)
+            self.audio_label.setText(f"Audio: 🔊 {volume_percent}%")
+            self.audio_label.setStyleSheet("color: blue; font-size: 11px;")
+            
             # Mettre à jour la position si en lecture
             if self.video_player.is_playing:
                 self.video_player.update()
@@ -116,6 +131,17 @@ class VideoWindow(QMainWindow):
             frame = frame[:, :, ::-1].copy()  # BGR vers RGB
         h, w, _ = frame.shape
         return QImage(frame.data, w, h, 3*w, QImage.Format_RGB888)
+    
+    def toggle_fullscreen(self):
+        """Bascule entre mode plein écran et fenêtre."""
+        if self.is_fullscreen:
+            self.showNormal()
+            self.is_fullscreen = False
+            self.log.info("Mode fenêtre activé")
+        else:
+            self.showFullScreen()
+            self.is_fullscreen = True
+            self.log.info("Mode plein écran activé")
     
     def closeEvent(self, e):
         """Libère les ressources lors de la fermeture."""

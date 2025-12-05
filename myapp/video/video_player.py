@@ -32,6 +32,9 @@ class VideoPlayer:
         # Vitesse de défilement (frames à sauter pour avancer/reculer)
         self.skip_frames = int(self.fps * 2)  # 2 secondes par geste
         
+        # État audio
+        self.volume = 1.0  # Volume entre 0.0 et 1.0
+        
         self.log.info(
             "Vidéo chargée: %s (%sx%s, %s fps, %s frames)",
             self.video_path.name, self.width, self.height, self.fps, self.total_frames
@@ -124,6 +127,24 @@ class VideoPlayer:
     def get_duration(self) -> float:
         """Retourne la durée totale en secondes."""
         return self.total_frames / self.fps if self.fps > 0 else 0
+    
+    def set_volume(self, volume: float):
+        """
+        Définit le volume (entre 0.0 et 1.0).
+        """
+        self.volume = max(0.0, min(1.0, volume))
+        self.log.debug(f"Volume défini à {self.volume:.2f}")
+    
+    def get_volume(self) -> float:
+        """Retourne le volume actuel (entre 0.0 et 1.0)."""
+        return self.volume
+    
+    def adjust_volume(self, delta: float):
+        """
+        Ajuste le volume de delta (peut être positif ou négatif).
+        """
+        self.volume = max(0.0, min(1.0, self.volume + delta))
+        self.log.debug(f"Volume ajusté à {self.volume:.2f}")
     
     def release(self):
         """Libère les ressources."""

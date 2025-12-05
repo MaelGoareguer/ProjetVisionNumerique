@@ -64,8 +64,9 @@ class MainWindow(QMainWindow):
         self.video_label = QLabel("Flux vidéo")
         self.video_label.setAlignment(Qt.AlignCenter)
         self.video_label.setMinimumSize(640, 480)
-        # Permettre le redimensionnement automatique pour garder les proportions
-        self.video_label.setScaledContents(True)
+        # Ne pas utiliser setScaledContents pour éviter l'étirement
+        # On redimensionnera manuellement en préservant le ratio d'aspect
+        self.video_label.setScaledContents(False)
 
         btn_row = QHBoxLayout()
         self.btn_none = QPushButton("Aucun"); self.btn_none.setCheckable(True); self.btn_none.setChecked(True)
@@ -77,7 +78,8 @@ class MainWindow(QMainWindow):
         
         # Label pour afficher les instructions de gestes et l'état
         self.instructions_label = QLabel(
-            "Gestes: Main plate = PLAY/PAUSE | Index droite = AVANCER | Index gauche = RECULER\n"
+            "Gestes: Main plate (serrée) = PLAY/PAUSE | Main plate (écartée) = PLEIN ÉCRAN | "
+            "Index droite = AVANCER | Index gauche = RECULER | Index haut = VOLUME+ | Index bas = VOLUME-\n"
             "La vidéo s'ouvrira dans une fenêtre séparée. La caméra reste active ici.\n"
             "Vérité terrain: H = Main présente | N = Pas de main | C = Réinitialiser"
         )
@@ -311,10 +313,19 @@ class MainWindow(QMainWindow):
         # Convertir et afficher
         qimg = self._to_qimage(frame)
         if qimg:
-            # Utiliser une conversion directe sans redimensionnement à chaque fois
-            # Le redimensionnement se fera automatiquement par Qt
             pixmap = QPixmap.fromImage(qimg)
-            self.video_label.setPixmap(pixmap)
+            # Redimensionner en préservant le ratio d'aspect pour éviter l'étirement
+            label_size = self.video_label.size()
+            if label_size.width() > 0 and label_size.height() > 0:
+                # Calculer la taille en préservant le ratio d'aspect
+                pixmap_scaled = pixmap.scaled(
+                    label_size,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation
+                )
+                self.video_label.setPixmap(pixmap_scaled)
+            else:
+                self.video_label.setPixmap(pixmap)
         else:
             self.log.warning("Impossible de convertir la frame en QImage")
 
