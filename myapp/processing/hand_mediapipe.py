@@ -257,36 +257,28 @@ class HandMediaPipe(VideoProcessor):
         def calculate_distance(p1, p2):
             return np.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2)
         
-        # Calculer les directions pour vérifier si c'est un geste de navigation AVANT de vérifier la main plate
+        # Calculer les directions pour vérifier si c'est un geste de navigation ou de volume
         index_direction_h = index_tip.x - wrist.x  # Direction horizontale
         index_direction_v = index_tip.y - wrist.y  # Direction verticale
         abs_h = abs(index_direction_h)
         abs_v = abs(index_direction_v)
         
-        # Vérifier d'abord la navigation (index pointé horizontalement) si l'index est levé
-        # Cela évite que la main plate capture les gestes de navigation
-        # Vérifier même si count_fingers >= 4, mais seulement si l'index est vraiment pointé horizontalement
-        if index_up:
-            min_threshold_h = 0.08
-            ratio_horizontal = abs_h / abs_v if abs_v > 0.01 else 10.0
-            
-            # Si le mouvement est vraiment horizontal (ratio > 1.2) ET dépasse le seuil, c'est de la navigation
-            # Priorité à la navigation si l'index est clairement pointé horizontalement
-            if abs_h > min_threshold_h and ratio_horizontal > 1.2:
-                # INVERSE : La caméra est inversée par rapport à nous
-                if index_direction_h > 0:
-                    return "RECULER"  # Inversé : droite sur écran = reculer
-                else:
-                    return "AVANCER"  # Inversé : gauche sur écran = avancer
+        # Seuils et ratios
+        min_threshold_h = 0.07  # Seuil minimum pour la navigation (horizontal) - compromis entre sensibilité et précision
+        min_threshold_v = 0.10  # Seuil minimum pour le volume (vertical)
         
-        # MAIN PLATE = 4 doigts tendus (sans le pouce)
-        # Vérifier APRÈS la navigation pour éviter les faux positifs
-        # On accepte 4 doigts sur 4 (sans pouce) car le pouce peut être difficile à détecter
-        # Mais seulement si ce n'est PAS un geste de navigation (mouvement horizontal faible)
+        # Calculer les ratios
+        ratio_vertical = abs_v / abs_h if abs_h > 0.01 else 10.0  # Ratio vertical/horizontal
+        ratio_horizontal = abs_h / abs_v if abs_v > 0.01 else 10.0  # Ratio horizontal/vertical
+        
+        # PRIORITÉ 1: MAIN PLATE = 4 doigts tendus (sans le pouce)
+        # Mais vérifier d'abord que ce n'est PAS de la navigation (même si count_fingers >= 4)
         if count_fingers >= 4:
-            # Vérifier que ce n'est pas un geste de navigation
-            is_navigation = index_up and abs_h > 0.08 and (abs_h / abs_v if abs_v > 0.01 else 10.0) > 1.2
+            # Vérifier si c'est vraiment de la navigation (mouvement horizontal marqué)
+            # Si c'est de la navigation, ne pas traiter comme une main plate
+            is_navigation = (index_up or index_extended) and abs_h > min_threshold_h and ratio_horizontal > 0.8
             
+            # Si ce n'est pas de la navigation, c'est une main plate
             if not is_navigation:
                 # Calculer la distance entre les extrémités des doigts pour détecter si ils sont écartés
                 # Utiliser les distances entre les tips plutôt que les MCP pour une meilleure détection
@@ -302,56 +294,42 @@ class HandMediaPipe(VideoProcessor):
                 avg_tip_spread = (index_middle_tip_dist + middle_ring_tip_dist + ring_pinky_tip_dist) / 3
                 
                 # Normaliser par la taille de la main pour être plus robuste
-                # Si la distance moyenne entre les tips est > 40% de la taille de la main, considérer comme écartée
+                # Si la distance moyenne entre les tips est > 42% de la taille de la main, considérer comme écartée
                 if wrist_index_dist > 0:
                     normalized_spread = avg_tip_spread / wrist_index_dist
-                    # Seuil réduit : si les doigts sont écartés de plus de 0.4x la taille de la main = FULLSCREEN
+                    # Seuil légèrement réduit : si les doigts sont écartés de plus de 0.42x la taille de la main = FULLSCREEN
                     # Sinon = TOGGLE_PLAY_PAUSE (main plate serrée)
-                    # Seuil plus bas pour rendre le fullscreen plus facile à déclencher
-                    if normalized_spread > 0.4:
+                    if normalized_spread > 0.42:
                         return "FULLSCREEN"
                     else:
                         return "TOGGLE_PLAY_PAUSE"
                 else:
-                    # Fallback : utiliser un seuil absolu plus bas si la normalisation échoue
-                    if avg_tip_spread > 0.12:  # Seuil absolu réduit
+                    # Fallback : utiliser un seuil absolu
+                    if avg_tip_spread > 0.16:  # Seuil absolu à 0.16
                         return "FULLSCREEN"
                     else:
                         return "TOGGLE_PLAY_PAUSE"
         
-        # Pour détecter la direction, on regarde la position de l'index par rapport au poignet
-        # Mais seulement si ce n'est PAS une main plate (count_fingers < 4)
-        if count_fingers < 4:  # Pas tous les doigts tendus
-            # Calculer les directions horizontale et verticale
-            index_direction_h = index_tip.x - wrist.x  # Direction horizontale
-            index_direction_v = index_tip.y - wrist.y  # Direction verticale
-            
-            # Calculer les valeurs absolues pour déterminer la direction dominante
-            abs_h = abs(index_direction_h)
-            abs_v = abs(index_direction_v)
-            
-            # Seuil minimum pour la navigation (horizontal) - réduit pour être plus sensible
-            min_threshold_h = 0.08
-            # Seuil minimum pour le volume (vertical)
-            min_threshold_v = 0.10
-            
-            # Ratio pour déterminer si le mouvement est vraiment vertical
-            # Le mouvement vertical doit être au moins 1.3x plus important que l'horizontal
-            ratio_vertical = abs_v / abs_h if abs_h > 0.01 else 10.0
-            # Ratio pour déterminer si le mouvement est vraiment horizontal
-            # Le mouvement horizontal doit être au moins 1.0x plus important que le vertical (très permissif)
-            ratio_horizontal = abs_h / abs_v if abs_v > 0.01 else 10.0
-            
-            # Vérifier d'abord le volume (vertical) - nécessite que l'index soit pointé (index_extended)
-            # ET que le mouvement soit vraiment vertical
-            if index_extended and abs_v > min_threshold_v and (ratio_vertical > 1.3 or abs_h < 0.08):
-                # Index vers le haut (y plus petit = plus haut sur l'écran) = VOLUME_UP
-                # Index vers le bas (y plus grand = plus bas sur l'écran) = VOLUME_DOWN
-                # Note: index_tip.y augmente vers le bas de l'écran
-                if index_direction_v < 0:
-                    return "VOLUME_UP"  # index_tip.y < wrist.y = vers le haut
-                else:
-                    return "VOLUME_DOWN"  # index_tip.y > wrist.y = vers le bas
+        # PRIORITÉ 2: Si ce n'est PAS une main plate (count_fingers < 4), vérifier volume et navigation
+        # PRIORITÉ 2a: Vérifier d'abord le VOLUME (vertical) si l'index est pointé
+        # Le volume doit être vraiment vertical (ratio vertical > 1.5) pour éviter les confusions
+        if count_fingers < 4 and index_extended and abs_v > min_threshold_v and ratio_vertical > 1.5:
+            # Index vers le haut (y plus petit = plus haut sur l'écran) = VOLUME_UP
+            # Index vers le bas (y plus grand = plus bas sur l'écran) = VOLUME_DOWN
+            if index_direction_v < 0:
+                return "VOLUME_UP"  # index_tip.y < wrist.y = vers le haut
+            else:
+                return "VOLUME_DOWN"
+        
+        # PRIORITÉ 2b: Vérifier ensuite la NAVIGATION (horizontal) si l'index est levé OU pointé
+        # La navigation doit être principalement horizontale (ratio horizontal > 0.8) pour être plus permissive
+        # Le ratio de 0.8 permet la navigation même si l'index se baisse un peu
+        if count_fingers < 4 and (index_up or index_extended) and abs_h > min_threshold_h and ratio_horizontal > 0.8:
+            # INVERSE : La caméra est inversée par rapport à nous
+            if index_direction_h > 0:
+                return "RECULER"  # Inversé : droite sur écran = reculer
+            else:
+                return "AVANCER"  # Inversé : gauche sur écran = avancer
             
         
         # Si aucun geste reconnu, retourner None

@@ -392,6 +392,18 @@ class MainWindow(QMainWindow):
         elif key == Qt.Key_Left:
             self.metrics.declare_gesture("RECULER")
             self.log.info("Geste déclaré via clavier: RECULER")
+        elif key == Qt.Key_Up:
+            # Flèche haut = Volume Up
+            self.metrics.declare_gesture("VOLUME_UP")
+            self.log.info("Geste déclaré via clavier: VOLUME_UP")
+        elif key == Qt.Key_Down:
+            # Flèche bas = Volume Down
+            self.metrics.declare_gesture("VOLUME_DOWN")
+            self.log.info("Geste déclaré via clavier: VOLUME_DOWN")
+        elif key == Qt.Key_F:
+            # F = Fullscreen
+            self.metrics.declare_gesture("FULLSCREEN")
+            self.log.info("Geste déclaré via clavier: FULLSCREEN")
         # Touches pour la vérité terrain (présence de main)
         elif key == Qt.Key_H:
             # H = Hand present (main présente)
