@@ -4,7 +4,7 @@ import yaml, logging
 
 _DEFAULTS = {
     "camera": {"index": 0, "resolution": [1280,720], "fps": 30},
-    "engines": {"yolo": {}},
+    "engines": {"mediapipe": {}},
     "logging": {
         "level": "INFO",
         "handlers": {"console": True, "file": "log/app.log"},
