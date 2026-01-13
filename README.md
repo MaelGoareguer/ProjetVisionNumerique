@@ -274,9 +274,12 @@ Sur un système standard (CPU moderne, webcam 720p) :
 - [Documentation PySide6](https://doc.qt.io/qtforpython/)
 - [Documentation OpenCV](https://docs.opencv.org/)
 
-## Auteur
+## Équipe
 
-[Votre nom]
+- **GOAREGUER Maël**
+- **AKKAYA Garip**
+- **BAUDART Alexandre**
+- **POTIN Léa**
 
 ## Remerciements
 
