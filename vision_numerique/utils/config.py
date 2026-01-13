@@ -13,7 +13,7 @@ _DEFAULTS = {
 }
 
 def load_settings(candidates):
-    log = logging.getLogger("myapp.config")
+    log = logging.getLogger("vision_numerique.config")
     for p in candidates:
         p = Path(p)
         if p.exists():
@@ -28,7 +28,7 @@ def load_settings(candidates):
             return merged
     merged = _DEFAULTS.copy()
     merged["_settings_path"] = str(Path("settings.yaml").resolve())
-    logging.getLogger("myapp.config").warning("Aucun settings.yaml trouvé, defaults utilisés.")
+    logging.getLogger("vision_numerique.config").warning("Aucun settings.yaml trouvé, defaults utilisés.")
     return merged
 
 def save_settings(settings: dict, path: str | Path | None = None) -> None:

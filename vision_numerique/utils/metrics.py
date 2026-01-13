@@ -12,7 +12,7 @@ class PerformanceMetrics:
     Système de mesure de performance pour la détection de mains et la reconnaissance de gestes.
     """
     def __init__(self):
-        self.log = logging.getLogger("myapp.metrics")
+        self.log = logging.getLogger("vision_numerique.metrics")
         
         # Métriques de détection
         self.total_frames = 0

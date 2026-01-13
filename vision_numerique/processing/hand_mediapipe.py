@@ -1,7 +1,7 @@
 from __future__ import annotations
 import cv2
 import numpy as np
-from myapp.processing.base import VideoProcessor
+from vision_numerique.processing.base import VideoProcessor
 
 class HandMediaPipe(VideoProcessor):
     """

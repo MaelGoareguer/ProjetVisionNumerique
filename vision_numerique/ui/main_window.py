@@ -5,25 +5,25 @@ from PySide6.QtWidgets import QMainWindow, QLabel, QWidget, QVBoxLayout, QHBoxLa
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QPixmap, QImage, QAction, QKeyEvent
 
-from myapp.video.camera import Camera
-from myapp.video.video_player import VideoPlayer
-from myapp.ui.log_viewer import LogViewerDialog
-from myapp.ui.help_dialog import HelpDialog
-from myapp.ui.settings_dialog import SettingsDialog
-from myapp.ui.metrics_dialog import MetricsDialog
-from myapp.ui.video_window import VideoWindow
-from myapp.ui.video_window import VideoWindow
-from myapp.utils.config import save_settings
-from myapp.utils.logger import setup_logging
-from myapp.utils.metrics import PerformanceMetrics
-from myapp.processing.hand_mediapipe import HandMediaPipe
+from vision_numerique.video.camera import Camera
+from vision_numerique.video.video_player import VideoPlayer
+from vision_numerique.ui.log_viewer import LogViewerDialog
+from vision_numerique.ui.help_dialog import HelpDialog
+from vision_numerique.ui.settings_dialog import SettingsDialog
+from vision_numerique.ui.metrics_dialog import MetricsDialog
+from vision_numerique.ui.video_window import VideoWindow
+from vision_numerique.ui.video_window import VideoWindow
+from vision_numerique.utils.config import save_settings
+from vision_numerique.utils.logger import setup_logging
+from vision_numerique.utils.metrics import PerformanceMetrics
+from vision_numerique.processing.hand_mediapipe import HandMediaPipe
 
 class MainWindow(QMainWindow):
     def __init__(self, settings: dict):
         super().__init__()
-        self.setWindowTitle("MyApp – Webcam + MediaPipe")
+        self.setWindowTitle("Vision Numérique – Contrôle Vidéo par Gestes")
         self.settings = settings
-        self.log = logging.getLogger("myapp.ui")
+        self.log = logging.getLogger("vision_numerique.ui")
         
         # Système de métriques
         self.metrics = PerformanceMetrics()
@@ -369,7 +369,7 @@ class MainWindow(QMainWindow):
         self.settings = new_settings
         # reconfigure logging
         setup_logging(self.settings.get("logging"))
-        logging.getLogger("myapp").info("Configuration rechargée depuis la fenêtre Paramètres.")
+        logging.getLogger("vision_numerique").info("Configuration rechargée depuis la fenêtre Paramètres.")
 
         # reconfigure caméra + timer
         self._init_camera()

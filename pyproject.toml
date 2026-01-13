@@ -3,10 +3,24 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "myapp"
+name = "vision-numerique"
 version = "0.1.0"
-description = "App PySide6 webcam + MediaPipe (détection de mains et reconnaissance de gestes)"
+description = "Application de recherche en vision par ordinateur pour le contrôle vidéo par gestes de la main"
+readme = "README.md"
 requires-python = ">=3.10"
+authors = [
+    {name = "Votre Nom", email = "votre.email@example.com"}
+]
+keywords = ["computer-vision", "gesture-recognition", "mediapipe", "human-computer-interaction", "video-control"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
   "PySide6>=6.5",
   "opencv-python>=4.8,<4.10",
@@ -17,10 +31,10 @@ dependencies = [
 ]
 
 [project.scripts]
-myapp = "myapp.main:main"
+vision-numerique = "vision_numerique.main:main"
 
 [tool.setuptools]
-packages = ["myapp"]
+packages = ["vision_numerique"]
 
 [tool.setuptools.package-data]
-myapp = ["resources/*", "settings.yaml"]
+vision_numerique = ["resources/*", "settings.yaml"]

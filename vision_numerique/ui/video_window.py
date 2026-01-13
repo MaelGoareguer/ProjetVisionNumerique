@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QMainWindow, QLabel, QWidget, QVBoxLayout
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QPixmap, QImage
 
-from myapp.video.video_player import VideoPlayer
+from vision_numerique.video.video_player import VideoPlayer
 
 
 class VideoWindow(QMainWindow):
@@ -14,7 +14,7 @@ class VideoWindow(QMainWindow):
     """
     def __init__(self, video_player: VideoPlayer, parent=None):
         super().__init__(parent)
-        self.log = logging.getLogger("myapp.video_window")
+        self.log = logging.getLogger("vision_numerique.video_window")
         self.video_player = video_player
         
         # Mettre à jour le titre de la fenêtre

@@ -9,7 +9,7 @@ class VideoPlayer:
     Lecteur vidéo avec contrôles gestuels.
     """
     def __init__(self, video_path: str | Path):
-        self.log = logging.getLogger("myapp.video_player")
+        self.log = logging.getLogger("vision_numerique.video_player")
         self.video_path = Path(video_path)
         
         if not self.video_path.exists():

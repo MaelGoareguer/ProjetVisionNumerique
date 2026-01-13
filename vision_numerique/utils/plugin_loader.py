@@ -16,7 +16,7 @@ def _engine_kwargs(module_cfg: dict, settings: dict) -> dict:
     return kwargs
 
 def load_modules(settings: dict) -> List[Any]:
-    log = logging.getLogger("myapp.plugins")
+    log = logging.getLogger("vision_numerique.plugins")
     modules_cfg = settings.get("processing", {}).get("modules", [])
     instances = []
     for m in modules_cfg:

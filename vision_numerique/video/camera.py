@@ -3,7 +3,7 @@ import cv2, logging
 
 class Camera:
     def __init__(self, index=0, resolution=(1280,720), fps=30):
-        self.log = logging.getLogger("myapp.camera")
+        self.log = logging.getLogger("vision_numerique.camera")
         self.index = index
         self.cap = cv2.VideoCapture(index, cv2.CAP_DSHOW) if hasattr(cv2, "CAP_DSHOW") else cv2.VideoCapture(index)
         if not self.cap.isOpened():

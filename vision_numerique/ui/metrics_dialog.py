@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QFileDialog, QMessageBox, QMenu
 )
 from PySide6.QtCore import Qt
-from myapp.utils.metrics import PerformanceMetrics
+from vision_numerique.utils.metrics import PerformanceMetrics
 from pathlib import Path
 import logging
 
@@ -16,7 +16,7 @@ class MetricsDialog(QDialog):
     def __init__(self, metrics: PerformanceMetrics, parent=None):
         super().__init__(parent)
         self.metrics = metrics
-        self.log = logging.getLogger("myapp.ui.metrics_dialog")
+        self.log = logging.getLogger("vision_numerique.ui.metrics_dialog")
         self.setWindowTitle("Métriques de Performance")
         self.setMinimumSize(800, 600)
         

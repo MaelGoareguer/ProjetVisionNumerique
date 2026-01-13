@@ -11,7 +11,7 @@ class VideoProcessor:
         self.name = name or self.__class__.__name__
         self.config = config or {}
         self.kwargs = kwargs
-        self.log = logging.getLogger(f"myapp.proc.{self.name}")
+        self.log = logging.getLogger(f"vision_numerique.proc.{self.name}")
 
     def process_frame(self, frame):
         raise NotImplementedError("Implémentez process_frame(frame)")

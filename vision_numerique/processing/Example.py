@@ -1,5 +1,5 @@
 from __future__ import annotations
-from myapp.processing.base import VideoProcessor
+from vision_numerique.processing.base import VideoProcessor
 
 class HandExample(VideoProcessor):
     def __init__(self, *args, **kwargs):
