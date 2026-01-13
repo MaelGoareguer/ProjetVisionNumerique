@@ -288,4 +288,4 @@ Sur un système standard (CPU moderne, webcam 720p) :
 
 ---
 
-*Ce projet est développé dans un contexte de recherche en vision par ordinateur et interaction homme-machine.*
+*Ce projet est développé dans un contexte d'étude de recherche en vision par ordinateur et interaction homme-machine.*
